@@ -1,0 +1,6 @@
+---
+- name: Clone the repository for Docker Compose
+  git:
+    repo: https://github.com/ritik-rkg/Talent_Bridge_Compose.git
+    dest: /tmp/Talent_Bridge_Compose
+  become: true
