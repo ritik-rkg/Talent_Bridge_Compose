@@ -1,4 +1,8 @@
 ---
+- name: Set COMPOSE_HTTP_TIMEOUT to 300
+  shell: export COMPOSE_HTTP_TIMEOUT=300
+  become: true
+
 - name: Deploy the application using Docker Compose
   command: docker-compose -f /tmp/Talent_Bridge_Compose/docker-compose.yaml up -d
   args:
