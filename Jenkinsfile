@@ -8,7 +8,7 @@ pipeline {
         API_SECRET = credentials("cloud_api_secret")
         PORT = "8000" 
         MINIKUBE_HOME = '/home/jenkins/.minikube'
-        
+        VAULT_PASS = credentials("ansible_vault_pass")
     }
     agent any
     tools {nodejs "NODEJS"} 
@@ -43,7 +43,7 @@ pipeline {
                 '''
             }
         }
-        stage("Stage 3.5: Remove docker images and container") {
+        stage("Stage 4: Remove docker images and container") {
             steps {
                 sh "docker container prune -f"
                 sh "docker image prune -a -f"
@@ -52,7 +52,7 @@ pipeline {
        
         
 
-        stage("Stage 4.1: Creating Docker Image for frontend") {
+        stage("Stage 5: Creating Docker Image for frontend") {
             steps {
                 sh '''
                 cd Talent_Bridge_Compose/frontend
@@ -60,14 +60,14 @@ pipeline {
                 '''
             }
         }
-        stage("Stage 4.2: Scan Docker Image for frontend") {
+        stage("Stage 6: Scan Docker Image for frontend") {
             steps {
                 sh '''
                 trivy image ritikgupta0114/frontend:latest
                 '''
             }
         }
-        stage("Stage 4.3: Push Frontend Docker Image") {
+        stage("Stage 7: Push Frontend Docker Image") {
             steps {
                 sh '''
                 docker login -u ${DOCKERHUB_CRED_USR} -p ${DOCKERHUB_CRED_PSW}
@@ -80,15 +80,15 @@ pipeline {
 
         
 
-        stage("Stage 5.1: Creating Docker Image for backend") {
+        stage("Stage 8: Creating Docker Image for backend") {
             steps {
                 sh '''
-                cd Talent_Bridge_K8s/backend
+                cd Talent_Bridge_Compose/backend
                 docker build -t ritikgupta0114/backend:latest .
                 '''
             }
         }
-        stage("Stage 5.2: Scan Docker Image for backend") {
+        stage("Stage 9: Scan Docker Image for backend") {
             steps {
                 sh '''
                 trivy image ritikgupta0114/backend:latest
@@ -97,7 +97,7 @@ pipeline {
         }
 
 
-        stage("Stage 5.3: Push Backend Docker Image") {
+        stage("Stage 10: Push Backend Docker Image") {
             steps {
                 sh '''
                 docker login -u ${DOCKERHUB_CRED_USR} -p ${DOCKERHUB_CRED_PSW}
@@ -108,11 +108,14 @@ pipeline {
 
         
 
-        stage("Stage 8: Ansible"){
+        stage("Stage 11: Ansible"){
             steps {
                 sh '''
                 cd Talent_Bridge_Compose
-                ansible-playbook -i inventory playbook-new.yaml
+                echo "$VAULT_PASS" > /tmp/vault_pass.txt
+                chmod 600 /tmp/vault_pass.txt
+                ansible-playbook -i inventory --vault-password-file /tmp/vault_pass.txt playbook-new.yaml
+                rm -f /tmp/vault_pass.txt
                 '''
             }
 
