@@ -61,6 +61,7 @@ pipeline {
                 '''
             }
         }
+
         stage("Stage 6: Scan Docker Image for frontend") {
             steps {
                 sh '''
@@ -68,6 +69,7 @@ pipeline {
                 '''
             }
         }
+
         stage("Stage 7: Push Frontend Docker Image") {
             steps {
                 sh '''
@@ -76,9 +78,6 @@ pipeline {
                 '''
             }
         }
-
-        
-
         
 
         stage("Stage 8: Creating Docker Image for backend") {
@@ -89,6 +88,7 @@ pipeline {
                 '''
             }
         }
+
         stage("Stage 9: Scan Docker Image for backend") {
             steps {
                 sh '''
