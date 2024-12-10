@@ -2,6 +2,5 @@
   hosts: all
   become: true  # Ensure root privileges are used
   roles:
-    - docker_install
     - git_clone
     - deploy_docker_compose
