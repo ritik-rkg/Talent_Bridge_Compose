@@ -8,7 +8,7 @@ pipeline {
         API_SECRET = credentials("cloud_api_secret")
         PORT = "8000" 
         MINIKUBE_HOME = '/home/jenkins/.minikube'
-        VAULT_PASS = credentials("ansible_vault_pass")
+        
     }
     agent any
     tools {nodejs "NODEJS"} 
