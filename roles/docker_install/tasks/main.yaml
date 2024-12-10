@@ -3,8 +3,10 @@
   apt:
     name: docker.io
     state: present
+  become: true
 
 - name: Install Docker Compose
   apt:
     name: docker-compose
     state: present
+  become: true

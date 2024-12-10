@@ -3,3 +3,4 @@
   command: docker-compose -f /tmp/Talent_Bridge_Compose/docker-compose.yaml up -d
   args:
     chdir: /tmp/Talent_Bridge_Compose
+  become: true

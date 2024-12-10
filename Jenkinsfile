@@ -9,6 +9,7 @@ pipeline {
         PORT = "8000" 
         MINIKUBE_HOME = '/home/jenkins/.minikube'
         VAULT_PASS = credentials("ansible_vault_pass")
+        BECOME_PASS = credentials("ansible_vault_pass")
     }
     agent any
     tools {nodejs "NODEJS"} 
@@ -108,17 +109,24 @@ pipeline {
 
         
 
-        stage("Stage 11: Ansible"){
+        stage("Stage 11: Ansible") {
             steps {
                 sh '''
                 cd Talent_Bridge_Compose
                 echo "$VAULT_PASS" > /tmp/vault_pass.txt
                 chmod 600 /tmp/vault_pass.txt
-                ansible-playbook -i inventory --vault-password-file /tmp/vault_pass.txt playbook-new.yaml
-                rm -f /tmp/vault_pass.txt
+                
+                # Export become password if needed
+                echo "$BECOME_PASS" > /tmp/become_pass.txt
+                chmod 600 /tmp/become_pass.txt
+                
+                # Run the Ansible playbook with sudo privilege
+                ansible-playbook -i inventory --vault-password-file /tmp/vault_pass.txt --extra-vars "ansible_become_pass=$(cat /tmp/become_pass.txt)" playbook-new.yaml
+                
+                # Clean up sensitive files
+                rm -f /tmp/vault_pass.txt /tmp/become_pass.txt
                 '''
             }
-
         }
     }
 }
