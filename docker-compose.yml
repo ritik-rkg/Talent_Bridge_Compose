@@ -1,0 +1,81 @@
+services:
+  server:
+    image: ritikgupta0114/backend:latest
+    container_name: myapp-node-server
+    ports:
+      - "8000:8000"
+    environment:
+      - NODE_ENV=development
+      - MONGO_URI
+      - LOGSTASH_HOST=logstash:5044
+    networks:
+      - app-network
+    depends_on:
+      - client
+      - logstash
+    volumes:
+      - /app/node_modules
+      - /home/ritik/Downloads/atalent_bridge/talentbridge/app.log:/app/app.log
+    dns:
+      - 8.8.8.8
+
+  client:
+    image: ritikgupta0114/frontend:latest
+    container_name: myapp-react-client
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=development
+    networks:
+      - app-network
+    volumes:
+      - /app/node_modules
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.10
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    networks:
+      - app-network
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.17.10
+    container_name: logstash
+    volumes:
+      - /home/ritik/Downloads/atalent_bridge/talentbridge/app.log:/app/app.log
+      - /home/ritik/Downloads/atalent_bridge/talentbridge/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+    environment:
+      - xpack.monitoring.enabled=false
+    networks:
+      - app-network
+    depends_on:
+      - elasticsearch
+    ports:
+      - "5044:5044"
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.10
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    networks:
+      - app-network
+    depends_on:
+      - elasticsearch
+    ports:
+      - "5601:5601"
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  node_modules:
+  elasticsearch-data:
+    driver: local
