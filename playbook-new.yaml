@@ -1,6 +1,5 @@
 - name: Deploying with Docker-Compose
   hosts: all
-  become: true  # Ensure root privileges are used
   roles:
     - docker_install
     - git_clone
