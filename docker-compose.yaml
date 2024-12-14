@@ -15,7 +15,7 @@ services:
       - logstash
     volumes:
       - /app/node_modules
-      - /home/ritik/Downloads/atalent_bridge/talentbridge/app.log:/app/app.log
+      - /home/ritik/Downloads/Talent_Bridge_Compose/Job Portal/app.log:/app/app.log
     dns:
       - 8.8.8.8
 
@@ -48,8 +48,8 @@ services:
     image: docker.elastic.co/logstash/logstash:7.17.10
     container_name: logstash
     volumes:
-      - /home/ritik/Downloads/atalent_bridge/talentbridge/app.log:/app/app.log
-      - /home/ritik/Downloads/atalent_bridge/talentbridge/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+      - /home/ritik/Downloads/Talent_Bridge_Compose/Job Portal/app.log:/app/app.log
+      - /home/ritik/Downloads/Talent_Bridge_Compose/Job Portal/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
     environment:
       - xpack.monitoring.enabled=false
     networks:

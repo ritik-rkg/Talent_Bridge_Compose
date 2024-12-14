@@ -41,7 +41,7 @@ app.use(
       },
     })
   );
-  const PORT = 8000 || 8000;
+  const PORT = process.env.PORT || 8000;
 // const PORT = process.env.PORT || 3000;
 
 
