@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
 const corsOptions = {
-    origin:[process.env.CLIENT_ORIGIN_URL,process.env.NGINX_ORIGIN_URL] ,
+    origin:["http://localhost:5173"] ,
     credentials:true
 }
 
@@ -41,7 +41,7 @@ app.use(
       },
     })
   );
-  const PORT = process.env.PORT || 8000;
+  const PORT = 8000 || 8000;
 // const PORT = process.env.PORT || 3000;
 
 
